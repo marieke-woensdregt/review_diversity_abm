@@ -7,7 +7,6 @@ def create_or_get_bucket(bucket_name):
   if (bucket.exists()):
       return storage_client.get_bucket(bucket_name)
   else:    
-    bucket.storage_class = "Standard"
     return storage_client.create_bucket(bucket, location="us")
 
 def save_output(out, filename = "script_output.pkl"):
