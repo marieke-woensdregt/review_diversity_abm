@@ -11,4 +11,6 @@ ENV AM_I_IN_A_DOCKER_CONTAINER Yes
 
 ENV MY_PARAMETER=""
 
-CMD python /src/main.py --my-parameter $MY_PARAMETER
+WORKDIR /src
+
+CMD python main.py --my-parameter $MY_PARAMETER
