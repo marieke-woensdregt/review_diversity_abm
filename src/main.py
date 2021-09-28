@@ -1,4 +1,5 @@
 import configparser
+import pickle
 from google.cloud import storage
 
 def create_or_get_bucket(bucket_name):
