@@ -1,6 +1,6 @@
 FROM python:3
 
-ADD /src
+ADD /src /src
 
 RUN pip install -r /src/requirements.txt
 
