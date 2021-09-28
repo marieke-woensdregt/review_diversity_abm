@@ -2,6 +2,11 @@ import configparser
 import pickle
 from google.cloud import storage
 
+#Kill VM when script ends
+from helpers import *
+import atexit
+atexit.register(kill_vm)
+
 def create_or_get_bucket(bucket_name):
   storage_client = storage.Client()
   bucket = storage_client.bucket(bucket_name)
@@ -18,7 +23,7 @@ def save_output(out, filename = "script_output.pkl"):
         file.close()
     
     blob = bucket.blob(filename)
-    blob.upload_from_filename()
+    blob.upload_from_filename(filename)
 
 if __name__ == '__main__':
 
