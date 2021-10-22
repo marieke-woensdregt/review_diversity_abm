@@ -67,7 +67,7 @@ class GCE_control:
         else:    
             return storage_client.create_bucket(bucket, location="us")
 
-    def save_output(self, ,out, filename = None):
+    def save_output(self, out, filename = None):
         bucket = self.create_or_get_bucket(self.BUCKET_NAME)
 
         self.output_counter += 1    
