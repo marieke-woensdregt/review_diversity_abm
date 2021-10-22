@@ -2,6 +2,7 @@ def kill_vm():
     """
     If we are running inside a GCE VM, kill it.
     """
+    print("Trying to kill VM")
     # from https://stackoverflow.com/a/52811140/10581449
     import json
     import logging
