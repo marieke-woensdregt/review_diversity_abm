@@ -15,7 +15,6 @@ atexit.register(GCE.kill_vm)
 import sys
 path = 'stdout.txt'
 sys.stdout = open(path, 'w')
-print("hihi")
 
 #Use functions to send update emails and save objects as required
 #GCE.save_output("anything") #Saves any object as pickle to Cloud Storage

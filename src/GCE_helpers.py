@@ -89,7 +89,7 @@ class GCE_control:
         if not filename[-4:] == ".pkl":
             filename += ".pkl"    
 
-        filename = self.PREFIX =+ filename    
+        filename = self.PREFIX + filename    
 
         with open(filename, 'wb') as file:
             pickle.dump(out, file)
