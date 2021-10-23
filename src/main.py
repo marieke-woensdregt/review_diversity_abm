@@ -11,6 +11,12 @@ GCE = GCE_control()
 import atexit
 atexit.register(GCE.kill_vm)
 
+#Redirect stdout to file, particularly for error messages. This is included in the final status email if SMTP is set up correctly (if you don't want that, best just delete these rows here)
+import sys
+path = 'stdout.txt'
+sys.stdout = open(path, 'w')
+print("hihi")
+
 #Use functions to send update emails and save objects as required
 #GCE.save_output("anything") #Saves any object as pickle to Cloud Storage
 #GCE.send_email_update("I'm fine") #Sends email update based on config data

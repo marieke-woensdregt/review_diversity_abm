@@ -10,16 +10,25 @@ class GCE_control:
         self.PROJECT_NAME = config["Config"]["PROJECT_NAME"]
         self.BUCKET_NAME = config["Config"]["BUCKET_NAME"]
         self.gcepy_smtp_config = config["SMTP"]
+        if config.has_option("Config", "FILE_PREFIX"):
+            self.PREFIX = str(config["Config"]["FILE_PREFIX"])
+        else:
+            self.PREFIX = ""
         self.output_counter = 0
 
     def kill_vm(self):
-        """
-        If we are running inside a GCE VM, kill it.
-        """
+
+        if os.path.isfile("stdout.txt"):
+            with open("stdout.txt", "r") as f:
+                logs = "Stdout was:\n" + f.read()
+        else:
+            logs = ""     
+        self.send_email_update("Finished script - trying to kill VM" + "\n" + logs)
+        
+        #Only try to kill if we are actually in a Docker - not in local testing.
         if not 'AM_I_IN_A_DOCKER_CONTAINER' in os.environ:
             pass
         else:
-            self.send_email_update("Finished script - trying to kill VM")
             # from https://stackoverflow.com/a/52811140/10581449
             import json
             import logging
@@ -60,8 +69,7 @@ class GCE_control:
                 s.login(self.gcepy_smtp_config["LOGIN"], self.gcepy_smtp_config["PWD"])
                 s.sendmail(self.gcepy_smtp_config["SENDER_EMAIL"], self.gcepy_smtp_config["RECEIVER_EMAIL"], "Subject: " + subject + "\n\n" + message)
         except Exception as e:
-            # Print any error messages to stdout
-            print(e)
+            print(e) # Will probably get lost in Docker limbo ...
 
     def create_or_get_bucket(self):
         storage_client = storage.Client()
@@ -81,9 +89,13 @@ class GCE_control:
         if not filename[-4:] == ".pkl":
             filename += ".pkl"    
 
+        filename = self.PREFIX =+ filename    
+
         with open(filename, 'wb') as file:
             pickle.dump(out, file)
             file.close()
         
         blob = bucket.blob(filename)
-        blob.upload_from_filename(filename)        
+        blob.upload_from_filename(filename)
+
+        os.remove(filename)
