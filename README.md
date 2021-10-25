@@ -12,7 +12,7 @@ Many thanks to
 
 The quickest way to set up Python with the required dependencies on a Google Cloud Virtual Machine, and to get all necessary code and data there, is to package all of that in a Docker image. 
 
-For that, you just need to add all your requirements to `requirements.txt` (if they cannot be installed with pip, you need to edit the `Dockerfile` directly to install them). Then you need to include your code in `main.py`, leaving the first 20 lines intact. At the end of the code, use one or more calls to `GCE.save_output()` to save your results. At that point - or throughout the process - you can send yourself update emails using `GCE.send_email_update()`
+For that, you just need to add all your requirements to `requirements.txt` (if they cannot be installed with pip, you need to edit the `Dockerfile` directly to install them). Then you need to include your code in `main.py`, leaving the first 20 lines intact. At the end of the code, use one or more calls to `GCE.save_output()` to save your results. Throughout the process you can send yourself update emails using `GCE.send_email_update()`; if you set up the SMTP server, you will automatically be sent an email when the script is done. [^1]
 
 Some more on the two functions:
 
@@ -21,9 +21,9 @@ Some more on the two functions:
 
 ### Set config parameters
 
-In config.conf, enter the desired *Cloud Storage bucket (folder) name*. Note that this should either be new, or belong to the current Google Cloud project. Otherwise, you will need to adjust the [service account permissions in the Console](https://console.cloud.google.com/iam-admin/) to allow write-access to a storage object from another project. You can also enter a *prefix* that will be added to all filenames, so that they can be identified and previous results are not overwritten. 
+In `config.conf`, enter the desired *Cloud Storage bucket (folder) name*. Note that this should either be new, or belong to the current Google Cloud project. Otherwise, you will need to adjust the [service account permissions in the Console](https://console.cloud.google.com/iam-admin/) to allow write-access to a storage object from another project. You can also enter a *prefix* that will be added to all filenames, so that they can be identified and previous results are not overwritten. 
 
-You might also want to insert *SMTP server details* to be able to receive status email updates. See this note on using Gmail ^[Gmail seems to work well, but you will likely need to create an [App Password](https://myaccount.google.com/apppasswords) to bypass two-factor authentification.]
+You might also want to insert *SMTP server details* to be able to receive status email updates. See this note on using Gmail[^2].
 
 ## Step 2: Set up Google Cloud and a project
 
@@ -33,22 +33,22 @@ You need a Google Cloud account with billing enabled. There are [offers with gen
 
 Authenticate gcloud in your terminal, and *select/create a new project* at the end (I use Powershell, which influences some details in this code)
 
-  gcloud init
+    gcloud init
 
 If you just created a new project, you need to *set up billing* for it. First find out your billing account number, then add it to the project (this will install the SDK *beta* commands and take a while - you can also do it in the visual console if you don't plan to use this often)
 
-  gcloud beta billing accounts list
-  gcloud beta billing projects link $PROJECT_ID --billing-account $BILLING_ACCOUNT_ID
+    gcloud beta billing accounts list
+    gcloud beta billing projects link $PROJECT_ID --billing-account $BILLING_ACCOUNT_ID
 
 *Enable required services.* We need compute to run the VM, cloudbuild to create the Docker file and containerregistry to store
 
-  gcloud services enable compute cloudbuild.googleapis.com containerregistry.googleapis.com
+    gcloud services enable compute cloudbuild.googleapis.com containerregistry.googleapis.com
 
 ### Build the Docker container
 
 Set up Cloud Build to create the Docker Images whenever you push to the Github repo (or only when you push a specific tag, if you prefer that) - this needs to be done in the browser-based [Console](https://console.cloud.google.com/cloud-build/dashboard). Select that you want to build from Dockerfile (rather than Autodetected) so that you can edit the *Image name* - remove any variables (such as $COMMIT_SHA) and replace them by :latest, so that you can have a stable image name. You can then click on Run to build the first Docker image. Under Build Artefacts, you can find the link to the container registry, where you can copy the link to your image (with a button at the end of the path). It should look something like:
 
-  gcr.io/test-project-329910/github.com/lukaswallrich/pyscript2gce
+    gcr.io/test-project-329910/github.com/lukaswallrich/pyscript2gce
 
 If you have used the tag `latest` in the previous step, you can add that to this link to have a stable name for the latest build.
 
@@ -62,13 +62,13 @@ When it comes to machine type, there are [many choices](https://cloud.google.com
 
 *NB:* Backticks at the end of the lines are powershell code to run multi-line code.
 
-  gcloud compute instances create-with-container my-instance-name `
-    --container-image=gcr.io/test-project-329910/github.com/lukaswallrich/pyscript2gce:latest `
-    --zone=us-central1-b `
-    --machine-type=n1-standard-1  `
-    --boot-disk-size=10GB `
-    --scopes cloud-platform `
-    --container-restart-policy=never
+    gcloud compute instances create-with-container my-instance-name `
+      --container-image=gcr.io/test-project-329910/github.com/lukaswallrich/pyscript2gce:latest `
+      --zone=us-central1-b `
+      --machine-type=n1-standard-1  `
+      --boot-disk-size=10GB `
+      --scopes cloud-platform `
+      --container-restart-policy=never
 
 The virtual machine *should* automatically shut down as soon as the script is done. However, please check that in order to avoid unnecessary costs.
 
@@ -79,3 +79,6 @@ The virtual machine *should* automatically shut down as soon as the script is do
 Download results from bucket
 
     gsutil cp -r gs://<bucket-name>/ ./
+
+[^1]: This email will also contain the console output and error messages raised by the script.
+[^2]: Gmail seems to work well, but you will likely need to create an [App Password](https://myaccount.google.com/apppasswords) to bypass two-factor authentification.
