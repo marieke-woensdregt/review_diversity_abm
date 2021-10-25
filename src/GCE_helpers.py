@@ -19,6 +19,7 @@ class GCE_control:
         else:
             # from https://stackoverflow.com/a/52811140/10581449
             import json
+            import requests
             self.PROJECT_ID = requests.get("http://metadata.google.internal/computeMetadata/v1/project/project-id",
                                     headers={"Metadata-Flavor": "Google"}).text
 
@@ -74,7 +75,7 @@ class GCE_control:
                 s.login(self.gcepy_smtp_config["LOGIN"], self.gcepy_smtp_config["PWD"])
                 s.sendmail(self.gcepy_smtp_config["SENDER_EMAIL"], self.gcepy_smtp_config["RECEIVER_EMAIL"], "Subject: " + subject + "\n\n" + message)
         except Exception as e:
-            print(e) # Will probably get lost in Docker limbo ...
+            print(e) # Will probably get lost in Docker limbo ... unless final email can be sent
 
     def create_or_get_bucket(self):
         storage_client = storage.Client()
