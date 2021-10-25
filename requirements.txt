@@ -1,8 +1,0 @@
-#DO NOT EDIT THIS - add project specific requirements to /src/requirements.txt
-google-cloud-storage
-
-
-#google-cloud-logging
-#google-cloud-secret-manager
-#google-cloud-pubsub
-#google-auth

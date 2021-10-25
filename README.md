@@ -12,7 +12,7 @@ Many thanks to
 
 The quickest way to set up Python with the required dependencies on a Google Cloud Virtual Machine, and to get all necessary code and data there, is to package all of that in a Docker image. 
 
-For that, you just need to add all your requirements to `requirements.txt` (if they cannot be installed with pip, you need to edit the `Dockerfile` directly to install them). Then you need to include your code in main.py, leaving the first 20 lines intact. At the end of the code, use one or more calls to `GCE.save_output()` to save your results. At that point - or throughout the process - you can send yourself update emails using `GCE.send_email_update()`
+For that, you just need to add all your requirements to `requirements.txt` (if they cannot be installed with pip, you need to edit the `Dockerfile` directly to install them). Then you need to include your code in `main.py`, leaving the first 20 lines intact. At the end of the code, use one or more calls to `GCE.save_output()` to save your results. At that point - or throughout the process - you can send yourself update emails using `GCE.send_email_update()`
 
 Some more on the two functions:
 
