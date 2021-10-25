@@ -7,14 +7,17 @@ if not 'AM_I_IN_A_DOCKER_CONTAINER' in os.environ:
 from GCE_helpers import GCE_control
 GCE = GCE_control()
 
-#Kill VM when script ends
+
+#Kill VM when script ends - whether that is due to exception or success
 import atexit
 atexit.register(GCE.kill_vm)
 
-#Redirect stdout to file, particularly for error messages. This is included in the final status email if SMTP is set up correctly (if you don't want that, best just delete these rows here)
+#Redirect stdout and stderr to file, particularly for error messages. This is included in the final status email if SMTP is set up correctly (if you don't want that, best just delete these rows here)
 import sys
 path = 'stdout.txt'
 sys.stdout = open(path, 'w')
+sys.stderr = sys.stdout
+
 
 #Use functions to send update emails and save objects as required
 #GCE.save_output("anything") #Saves any object as pickle to Cloud Storage
