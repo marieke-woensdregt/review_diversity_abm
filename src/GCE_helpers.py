@@ -7,7 +7,6 @@ class GCE_control:
     def __init__(self):
         config = configparser.ConfigParser()
         config.read("config.conf")
-        self.PROJECT_NAME = config["Config"]["PROJECT_NAME"]
         self.BUCKET_NAME = config["Config"]["BUCKET_NAME"]
         self.gcepy_smtp_config = config["SMTP"]
         if config.has_option("Config", "FILE_PREFIX"):
@@ -15,6 +14,13 @@ class GCE_control:
         else:
             self.PREFIX = ""
         self.output_counter = 0
+        if not 'AM_I_IN_A_DOCKER_CONTAINER' in os.environ:
+            pass
+        else:
+            # from https://stackoverflow.com/a/52811140/10581449
+            import json
+            self.PROJECT_ID = requests.get("http://metadata.google.internal/computeMetadata/v1/project/project-id",
+                                    headers={"Metadata-Flavor": "Google"}).text
 
     def kill_vm(self):
 
@@ -44,8 +50,7 @@ class GCE_control:
 
             # get instance metadata
             # based on https://cloud.google.com/compute/docs/storing-retrieving-metadata
-            project_id = requests.get("http://metadata.google.internal/computeMetadata/v1/project/project-id",
-                                    headers={"Metadata-Flavor": "Google"}).text
+
 
             name = requests.get("http://metadata.google.internal/computeMetadata/v1/instance/name",
                                 headers={"Metadata-Flavor": "Google"}).text
@@ -57,7 +62,7 @@ class GCE_control:
             # shut ourselves down
             logging.info("Calling API to delete this VM, {zone}/{name}".format(zone=zone, name=name))
 
-            requests.delete("https://www.googleapis.com/compute/v1/projects/{project_id}/zones/{zone}/instances/{name}"
+            requests.delete("https://www.googleapis.com/compute/v1/projects/{self.PROJECT_ID}/zones/{zone}/instances/{name}"
                             .format(project_id=project_id, zone=zone, name=name),
                             headers={"Authorization": "Bearer {token}".format(token=token)})
 
@@ -77,7 +82,7 @@ class GCE_control:
         if (bucket.exists()):
             return storage_client.get_bucket(self.BUCKET_NAME)
         else:    
-            return storage_client.create_bucket(bucket, location="us", project=self.PROJECT_NAME)
+            return storage_client.create_bucket(bucket, location="us", project=self.PROJECT_ID)
 
     def save_output(self, out, filename = None):
         bucket = self.create_or_get_bucket()
