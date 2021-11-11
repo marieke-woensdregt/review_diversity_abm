@@ -37,7 +37,7 @@ pd.set_option("precision", 3)
 
 fixed_params = {"n": 2000,
                "k": 3,
-               "N_agents": 10,
+               "N_agents": 9,
                "l": 12
                }
 variable_params = {
@@ -48,7 +48,7 @@ batch_run = BatchRunnerMP(GProblem,
                         16,
                         variable_parameters = variable_params,
                         fixed_parameters = fixed_params,
-                        iterations=500,
+                        iterations=100,
                         max_steps=100,
                         model_reporters={"agent_descriptives": lambda m: m.agent_descriptives,
                         "best_solution": lambda m: m.best_solution})
