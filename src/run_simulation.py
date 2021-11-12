@@ -1,4 +1,4 @@
-from mesa.batchrunner import BatchRunner
+from mesa.batchrunner import BatchRunnerMP
 
 import httpimport
 
@@ -11,8 +11,9 @@ fixed_params = {"n": 2000, "k": 3}
 
 variable_params = {"l": (12, 20), "N_agents": (10, 20)}
 
-batch_run = BatchRunner(
+batch_run = BatchRunnerMP(
     HPProblem,
+    16,
     variable_params,
     fixed_params,
     iterations=2,
