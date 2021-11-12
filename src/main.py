@@ -27,6 +27,6 @@ sys.stderr = sys.stdout
 
 GCE.send_email_update('Code within Docker Container launched successfully on Google Compute Engine')
 
-exec(open("run_simulation.py"))
+exec(open("run_simulation.py").read())
 
 GCE.save_output(out, "model_results")
