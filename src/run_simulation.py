@@ -16,7 +16,7 @@ batch_run = BatchRunnerMP(
     16,
     variable_params,
     fixed_params,
-    iterations=2,
+    iterations=500,
     max_steps=100,
     model_reporters={
         "agent_descriptives": lambda m: m.agent_descriptives,
