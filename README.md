@@ -38,7 +38,7 @@ Authenticate gcloud in your terminal, and *select/create a new project* at the e
 If you just created a new project, you need to *set up billing* for it. First find out your billing account number, then add it to the project (this will install the SDK *beta* commands and take a while - you can also do it in the visual console if you don't plan to use this often)
 
     gcloud beta billing accounts list
-    gcloud beta billing projects link $PROJECT_ID --billing-account $BILLING_ACCOUNT_ID
+    gcloud beta billing projects link $PROJECT_ID --billing-account 01714A-31B24A-770040
 
 *Enable required services.* We need compute to run the VM, cloudbuild to create the Docker file and containerregistry to store
 
@@ -62,15 +62,16 @@ When it comes to machine type, there are [many choices](https://cloud.google.com
 
 *NB:* Backticks at the end of the lines are powershell code to run multi-line code.
 
-    gcloud compute instances create-with-container my-instance-name `
-      --container-image=gcr.io/test-project-329910/github.com/lukaswallrich/pyscript2gce:latest `
+    gcloud compute instances create-with-container my-instance-name2 `
+      --container-image=gcr.io/diversity-simulations/github.com/lukaswallrich/pyscript2gce-production:latest `
       --zone=us-central1-b `
-      --machine-type=n1-standard-1  `
+      --machine-type=e2-highcpu-16  `
       --boot-disk-size=10GB `
       --scopes cloud-platform `
-      --container-restart-policy=never
+      --container-restart-policy=never `
+      --preemptible
 
-The virtual machine *should* automatically shut down as soon as the script is done. However, please check that in order to avoid unnecessary costs.
+The virtual machine *should* automatically shut down as soon as the script is done. However, please check that in order to avoid unnecessary costs. Also, the machine won't be deleted, so you will continue to be charged a small amount for the permanent disk until you delete it manually.
 
 (You can also experiment with pre-emptible machines. They are at least 60% cheaper, but might be pre-empted - i.e. shut down - at any time. For that, add `--preemptible` to the code. If you do that with long computations, you might want to consider regularly saving interim results.)
 
