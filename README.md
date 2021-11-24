@@ -62,7 +62,7 @@ When it comes to machine type, there are [many choices](https://cloud.google.com
 
 *NB:* Backticks at the end of the lines are powershell code to run multi-line code.
 
-    gcloud compute instances create-with-container my-instance-name `
+    gcloud compute instances create-with-container my-instance-name2 `
       --container-image=gcr.io/diversity-simulations/github.com/lukaswallrich/pyscript2gce-production:latest `
       --zone=us-central1-b `
       --machine-type=e2-highcpu-16  `
