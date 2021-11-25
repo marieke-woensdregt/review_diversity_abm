@@ -67,6 +67,14 @@ class GCE_control:
                             .format(project_id=project_id, zone=zone, name=name),
                             headers={"Authorization": "Bearer {token}".format(token=token)})
 
+            if os.path.isfile("stdout.txt"):
+                with open("stdout.txt", "r") as f:
+                    logs = "Stdout was:\n" + f.read()
+            else:
+                logs = ""     
+                
+            self.send_email_update("Tried to kill VM" + "\n" + logs)                
+
     def send_email_update(self, message, subject = "Update on GCE Python Script"):
         import smtplib
         try:
