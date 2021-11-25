@@ -2,7 +2,7 @@ from mesa.batchrunner import BatchRunnerMP
 
 import httpimport
 
-url = "https://gist.githubusercontent.com/LukasWallrich/05f445821fbae694b37a205dc08b2b4f/raw/ae983e2f29beec95fb28d1d2337f6fa62470cb26"
+url = "https://gist.githubusercontent.com/LukasWallrich/05f445821fbae694b37a205dc08b2b4f/raw/"
 
 with httpimport.remote_repo(["HPmodel"], url):
     from HPmodel import HPProblem
