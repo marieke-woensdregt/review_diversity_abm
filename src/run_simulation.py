@@ -14,8 +14,8 @@ variable_params = {"l": (12, 20), "N_agents": (10, 20)}
 batch_run = BatchRunnerMP(
     HPProblem,
     16,
-    variable_params,
-    fixed_params,
+    variable_parameters = variable_params,
+    fixed_parameters = fixed_params,
     iterations=500,
     max_steps=100,
     model_reporters={
